@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import agents_doctor.discovery as discovery
 from agents_doctor.config import Config
 from agents_doctor.discovery import discover_instruction_files
 from agents_doctor.models import Finding, Severity
@@ -67,6 +68,13 @@ def test_ad001_does_not_blame_the_budget_for_a_blank_file(make_repo):
     assert [f.rule for f in findings] == ["AD004"]
 
 
+def test_ad001_does_not_blame_budget_for_blank_file_after_exhaustion(make_repo, filler):
+    root = make_repo({"AGENTS.md": filler(1000), "sub/AGENTS.md": "   \n"})
+    findings = check(root, max_bytes=1000)
+
+    assert [f.rule for f in findings] == ["AD004"]
+
+
 def test_ad001_is_silent_when_everything_fits(make_repo, filler):
     root = make_repo({"AGENTS.md": filler(100), "sub/AGENTS.md": filler(100)})
     assert [f for f in check(root, max_bytes=10000) if f.rule == "AD001"] == []
@@ -76,6 +84,34 @@ def test_ad001_can_be_disabled(make_repo, filler):
     root = make_repo({"AGENTS.md": filler(5000)})
     config = Config(max_bytes=1000, rules={"AD001": "off"})
     assert [f for f in check(root, config) if f.rule == "AD001"] == []
+
+
+def test_build_context_does_not_reread_discovered_files(make_repo, filler, monkeypatch):
+    root = make_repo(
+        {
+            "AGENTS.md": filler(1000),
+            "a/AGENTS.md": filler(10),
+            "a/b/file.py": "pass\n",
+            "c/file.py": "pass\n",
+        }
+    )
+    config = Config(max_bytes=1000)
+    read_paths: list[str] = []
+    original = discovery.read_instruction_file
+
+    def record_read(path, project_root):
+        read_paths.append(path.relative_to(project_root).as_posix())
+        return original(path, project_root)
+
+    monkeypatch.setattr(discovery, "read_instruction_file", record_read)
+    files = discovery.discover_instruction_files(root, config)
+    context = build_context(root, config, files)
+
+    assert read_paths == ["AGENTS.md", "a/AGENTS.md"]
+    assert set(context.plans) == {".", "a", "a/b", "c"}
+    assert context.plans["a"].chunks[1].file.unread
+    assert context.plans["a"].chunks[1].file.content_known
+    assert context.plans["a/b"].chunks[1].file.content_known
 
 
 # --------------------------------------------------------------------------- #

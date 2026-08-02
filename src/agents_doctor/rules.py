@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from agents_doctor.config import Config
-from agents_doctor.discovery import build_load_plan
+from agents_doctor.discovery import load_instruction_chunk
 from agents_doctor.models import Finding, InstructionFile, LoadedChunk, LoadPlan, Severity
 
 
@@ -60,7 +60,7 @@ class Context:
     config: Config
     files: list[InstructionFile]
     plans: dict[str, LoadPlan]
-    """Load plan per instruction-file directory, keyed by repo-relative path."""
+    """Load plan per repository directory, keyed by repo-relative path."""
 
     _basenames: set[str] | None = None
 
@@ -422,13 +422,31 @@ CHECKS: dict[str, Callable[[Context, Severity], list[Finding]]] = {
 
 
 def build_context(root: Path, config: Config, files: Sequence[InstructionFile]) -> Context:
-    """Precompute the load plan for every working directory in the repository."""
-    plans = {}
+    """Precompute every working-directory plan without rereading instruction files."""
+    plans: dict[str, LoadPlan] = {}
+    files_by_directory = {file.directory: file for file in files}
+    excluded = set(config.exclude)
     for dirpath, dirnames, _ in os.walk(root):
-        dirnames[:] = sorted(name for name in dirnames if name not in set(config.exclude))
+        dirnames[:] = sorted(name for name in dirnames if name not in excluded)
         target = Path(dirpath)
         relative = target.relative_to(root).as_posix() or "."
-        plans[relative] = build_load_plan(target, root, config)
+        if relative == ".":
+            chunks: list[LoadedChunk] = []
+        else:
+            parent = Path(relative).parent.as_posix()
+            chunks = list(plans[parent].chunks)
+
+        file = files_by_directory.get(relative)
+        if file is not None:
+            loaded = sum(chunk.included_bytes for chunk in chunks)
+            remaining = max(0, config.max_bytes - loaded)
+            chunks.append(load_instruction_chunk(file, remaining))
+
+        plans[relative] = LoadPlan(
+            target=relative,
+            chunks=chunks,
+            max_bytes=config.max_bytes,
+        )
     return Context(root=root, config=config, files=list(files), plans=plans)
 
 

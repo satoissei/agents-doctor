@@ -38,7 +38,7 @@ repositories evolve.
 from GitHub, or install from a checkout while developing:
 
 ```console
-pipx install "git+https://github.com/satoissei/agents-doctor.git@v0.2.0"
+pipx install "git+https://github.com/satoissei/agents-doctor.git@v0.2.1"
 
 # Development checkout
 git clone https://github.com/satoissei/agents-doctor.git
@@ -69,7 +69,7 @@ For a local checkout of this repository, use the composite action directly:
 Other repositories should use the published release tag rather than a development branch:
 
 ```yaml
-- uses: satoissei/agents-doctor@v0.2.0
+- uses: satoissei/agents-doctor@v0.2.1
 ```
 
 ### As a pre-commit hook
@@ -79,7 +79,7 @@ Use the published release tag as `rev`:
 ```yaml
 repos:
   - repo: https://github.com/satoissei/agents-doctor
-    rev: v0.2.0
+    rev: v0.2.1
     hooks:
       - id: agents-doctor
 ```

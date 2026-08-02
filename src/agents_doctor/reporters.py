@@ -185,7 +185,10 @@ def format_plan(plan: LoadPlan) -> str:
     remaining = plan.max_bytes
     for index, chunk in enumerate(plan.chunks, start=1):
         file = chunk.file
-        if chunk.blank:
+        if file.unread and chunk.blank:
+            status = "not read"
+            detail = "known to be blank; consumes no budget"
+        elif chunk.blank:
             status = "skipped"
             detail = "blank file; consumes no budget"
         elif chunk.skipped_after_cut:
@@ -194,6 +197,8 @@ def format_plan(plan: LoadPlan) -> str:
         elif chunk.dropped:
             status = "NEVER LOADED"
             detail = f"all {file.raw_size:,} bytes lost"
+            if not chunk.lost_chars_known:
+                detail += "; character count unknown because contents were not read"
         elif chunk.truncated:
             status = "CUT SHORT"
             detail = (
@@ -235,7 +240,9 @@ def format_plan_json(plan: LoadPlan) -> str:
     chunks: list[dict[str, object]] = []
     for chunk in plan.chunks:
         file = chunk.file
-        if chunk.blank:
+        if file.unread and chunk.blank:
+            status = "not_read"
+        elif chunk.blank:
             status = "skipped"
         elif chunk.skipped_after_cut:
             status = "skipped_after_cut"
@@ -254,6 +261,8 @@ def format_plan_json(plan: LoadPlan) -> str:
                 "included_bytes": chunk.included_bytes,
                 "lost_bytes": chunk.lost_bytes,
                 "lost_characters": chunk.lost_chars,
+                "lost_characters_known": chunk.lost_chars_known,
+                "content_read": not file.unread,
                 "splits_character": chunk.splits_character,
                 "remaining_bytes": remaining,
             }
@@ -274,9 +283,10 @@ def format_plan_json(plan: LoadPlan) -> str:
 
 
 def _character_density(plan: LoadPlan) -> float:
-    """Bytes per character across the files in a plan; 1.0 for pure ASCII."""
-    total_bytes = sum(chunk.file.raw_size for chunk in plan.chunks)
-    total_chars = sum(chunk.file.char_count for chunk in plan.chunks)
+    """Bytes per known character across the files in a plan; 1.0 for pure ASCII."""
+    known = [chunk.file for chunk in plan.chunks if chunk.file.content_known]
+    total_bytes = sum(file.raw_size for file in known)
+    total_chars = sum(file.char_count for file in known)
     return total_bytes / total_chars if total_chars else 1.0
 
 

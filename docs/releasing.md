@@ -19,7 +19,7 @@
    ```
 
 4. Confirm the privacy and compatibility documentation still describes the release.
-5. Create and push the matching annotated tag, for example `v0.2.0`.
+5. Create and push the matching annotated tag, for example `v0.2.1`.
 
 ## What automation verifies
 

@@ -49,6 +49,15 @@ class InstructionFile:
     unread: bool = False
     """Whether contents were intentionally left unread because the loader would skip them."""
 
+    content_known: bool = True
+    """Whether ``data`` and ``text`` contain the file's actual contents.
+
+    A size-only placeholder is used when reproducing the loader after its budget
+    is exhausted.  Keeping this separate from ``unread`` matters to repository
+    checks: discovery may already know the contents even though the simulated
+    loader would not read that file.
+    """
+
     @property
     def raw_size(self) -> int:
         """Size in bytes, which is what the byte budget is measured in."""
@@ -139,11 +148,16 @@ class LoadedChunk:
 
     @property
     def lost_chars(self) -> int:
-        """Characters lost, which is what an author actually wrote."""
+        """Known characters lost, or zero when the contents were not inspected."""
         if not self.truncated:
             return self.file.char_count if self.dropped else 0
         kept = self.file.data[: self.included_bytes].decode("utf-8", errors="ignore")
         return max(0, self.file.char_count - len(kept))
+
+    @property
+    def lost_chars_known(self) -> bool:
+        """Whether ``lost_chars`` is an exact count rather than an unknown value."""
+        return self.file.content_known
 
 
 @dataclass(frozen=True)

@@ -3,10 +3,27 @@
 This is a public, privacy-safe preparation sheet. Do **not** commit your legal name,
 ChatGPT email address, OpenAI Organization ID, or non-public usage data here.
 
-The [Codex for Open Source program](https://developers.openai.com/community/codex-for-oss)
+The [Codex for Open Source application](https://openai.com/form/codex-for-oss/)
 reviews repository usage, ecosystem importance, active maintenance, and maintainer
 role. A new project must not invent adoption metrics; apply only with facts that can
 be verified from the public repository or a trustworthy public metric source.
+
+## Current eligibility assessment
+
+As of release `v0.2.1`, the repository provides public source, an OSI-approved
+license, installation and usage examples, contribution and security processes,
+issue and pull-request templates, a versioned changelog, tagged releases, automated
+tests across supported Python versions and operating systems, dependency and static
+security checks, and a maintainer release playbook.
+
+The main unresolved selection risk is **meaningful usage, broad adoption, or clear
+ecosystem importance**. The repository does not currently claim external users,
+downloads, downstream integrations, or other adoption evidence. A second release and
+good maintenance process demonstrate continued maintenance, but do not by themselves
+prove ecosystem impact. Before applying, add only independently verifiable evidence
+such as public downstream use, package downloads, substantive third-party issues or
+pull requests, or a documented dependency relationship. If none exists, submit the
+early-stage wording below and accept that the application may not be competitive yet.
 
 ## Submission checklist
 
@@ -17,6 +34,7 @@ be verified from the public repository or a trustworthy public metric source.
   if you cite it.
 - Your OpenAI Organization ID and ChatGPT-account email are entered only in the form.
 - No private paths, user data, API keys, or internal usage data are included.
+- Each free-text response fits the form's stated 500-character limit.
 
 ## Recommended selections
 
@@ -51,5 +69,5 @@ I am the repository owner and primary maintainer with write access. The project 
 ```
 
 Before submitting, re-check each sentence against the current public repository and
-the [program terms](https://developers.openai.com/codex/codex-for-oss-terms). The
+the [program terms](https://learn.chatgpt.com/docs/codex-for-oss-terms). The
 program may change, and selection is not guaranteed.

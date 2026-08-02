@@ -107,6 +107,35 @@ def test_explain_json_is_machine_readable(make_repo, filler, capsys):
     assert [chunk["status"] for chunk in payload["chunks"]] == ["loaded", "loaded"]
 
 
+def test_explain_marks_unread_character_count_as_unknown(make_repo, filler, capsys):
+    root = make_repo({"AGENTS.md": filler(1000), "sub/AGENTS.md": filler(500)})
+    code, out, _ = run(
+        capsys,
+        "--max-bytes",
+        "1000",
+        "explain",
+        str(root / "sub"),
+        "--format",
+        "json",
+    )
+
+    assert code == EXIT_OK
+    chunk = json.loads(out)["chunks"][1]
+    assert chunk["status"] == "never_loaded"
+    assert chunk["lost_characters"] == 0
+    assert chunk["lost_characters_known"] is False
+    assert chunk["content_read"] is False
+
+
+def test_explain_density_excludes_unread_size_only_files(make_repo, filler, capsys):
+    root = make_repo({"AGENTS.md": filler(1000), "sub/AGENTS.md": filler(1000)})
+    code, out, _ = run(capsys, "--max-bytes", "1000", "explain", str(root / "sub"))
+
+    assert code == EXIT_OK
+    assert "character count unknown" in out
+    assert "bytes per character" not in out
+
+
 def test_explain_accepts_custom_root_marker(make_repo, filler, capsys):
     root = make_repo(
         {"workspace.marker": "", "AGENTS.md": filler(100), "sub/AGENTS.md": filler(50)}, git=False

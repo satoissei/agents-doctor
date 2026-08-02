@@ -117,7 +117,20 @@ def test_budget_exhaustion_does_not_read_later_instruction_contents(make_repo, f
 
     assert read_paths == ["AGENTS.md"]
     assert plan.chunks[1].file.unread
+    assert not plan.chunks[1].file.content_known
     assert plan.chunks[1].dropped
+
+
+def test_zero_byte_file_after_budget_exhaustion_is_known_to_be_blank(make_repo, filler):
+    root = make_repo({"AGENTS.md": filler(1000), "sub/AGENTS.md": ""})
+    plan = build_load_plan(root / "sub", root, Config(max_bytes=1000))
+
+    chunk = plan.chunks[1]
+    assert chunk.file.unread
+    assert chunk.file.content_known
+    assert chunk.blank
+    assert not chunk.dropped
+    assert not plan.over_budget
 
 
 def test_blank_file_does_not_consume_budget(make_repo, filler):

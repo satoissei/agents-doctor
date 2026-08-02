@@ -2,7 +2,7 @@
 
 ## Supported reference
 
-Version `0.2.0` models the instruction-loading behaviour read from
+Version `0.2.1` models the instruction-loading behaviour read from
 [`openai/codex` commit `2b5bdcf`](https://github.com/openai/codex/tree/2b5bdcf67547860f2e5c5a605009a70026796b2b).
 It is a behavioural compatibility target, not a claim that this project embeds or
 controls Codex.

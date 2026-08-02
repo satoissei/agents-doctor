@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Iterable, Sequence
+from dataclasses import replace
 from pathlib import Path
 
 from agents_doctor.config import Config, _validate_local_names
@@ -106,14 +107,51 @@ def instruction_file_in(directory: Path, root: Path, config: Config) -> Instruct
 
 def unread_instruction_file(path: Path, root: Path) -> InstructionFile:
     """Represent a file the loader discovered but would not read after budget exhaustion."""
+    size = path.stat().st_size
     return InstructionFile(
         path=path,
         rel=_relative(path, root),
         data=b"",
         text="",
-        known_size=path.stat().st_size,
+        known_size=size,
         unread=True,
+        # A zero-byte file is provably blank without reading it.
+        content_known=size == 0,
     )
+
+
+def load_instruction_chunk(file: InstructionFile, remaining: int) -> LoadedChunk:
+    """Apply the loader's byte-budget rules to one already selected file.
+
+    Repository-wide checks discover file contents once and reuse them here.  The
+    ``unread`` flag still records that the real loader stops reading after the
+    budget reaches zero; ``content_known`` records whether *the check* knows the
+    contents from its earlier repository scan.
+    """
+    if remaining == 0:
+        return LoadedChunk(
+            file=replace(file, unread=True),
+            included_bytes=0,
+            blank=file.content_known and not file.text.strip(),
+        )
+
+    # A wholly blank file is a skip, not a loss: there was nothing in it for
+    # the model to miss, and the loader spends no budget on it.
+    is_blank = file.content_known and not file.text.strip()
+    included = min(file.raw_size, remaining)
+    kept = file.data[:included]
+    if file.content_known and not kept.decode("utf-8", errors="replace").strip():
+        # The loader drops content that is blank *after* the cut without
+        # consuming budget. When the full file had text beyond the cut, that
+        # text is genuinely lost, but this is distinct from a file dropped
+        # after the budget was already spent: later files can still load.
+        return LoadedChunk(
+            file=file,
+            included_bytes=0,
+            blank=is_blank,
+            skipped_after_cut=not is_blank,
+        )
+    return LoadedChunk(file=file, included_bytes=included)
 
 
 def chain_directories(target: Path, root: Path) -> list[Path]:
@@ -148,30 +186,12 @@ def build_load_plan(target: Path, root: Path, config: Config) -> LoadPlan:
         if path is None:
             continue
         if remaining == 0:
-            chunks.append(LoadedChunk(file=unread_instruction_file(path, root), included_bytes=0))
+            chunks.append(load_instruction_chunk(unread_instruction_file(path, root), remaining))
             continue
         file = read_instruction_file(path, root)
-        # A wholly blank file is a skip, not a loss: there was nothing in it for
-        # the model to miss, and the loader spends no budget on it.
-        is_blank = not file.text.strip()
-        included = min(file.raw_size, remaining)
-        kept = file.data[:included]
-        if not kept.decode("utf-8", errors="replace").strip():
-            # The loader drops content that is blank *after* the cut without
-            # consuming budget. When the full file had text beyond the cut, that
-            # text is genuinely lost, but this is distinct from a file dropped
-            # after the budget was already spent: later files can still load.
-            chunks.append(
-                LoadedChunk(
-                    file=file,
-                    included_bytes=0,
-                    blank=is_blank,
-                    skipped_after_cut=not is_blank,
-                )
-            )
-            continue
-        chunks.append(LoadedChunk(file=file, included_bytes=included))
-        remaining -= included
+        chunk = load_instruction_chunk(file, remaining)
+        chunks.append(chunk)
+        remaining -= chunk.included_bytes
 
     return LoadPlan(
         target=_relative(target, root) or ".",

@@ -12,7 +12,7 @@
 インストールしてください。
 
 ```console
-pipx install "git+https://github.com/satoissei/agents-doctor.git@v0.2.0"
+pipx install "git+https://github.com/satoissei/agents-doctor.git@v0.2.1"
 
 # 開発用チェックアウト
 git clone https://github.com/satoissei/agents-doctor.git
