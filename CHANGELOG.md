@@ -6,10 +6,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-08-03
+
 ### Added
 
 - Add a no-install trial command, public adoption-report form, and evidence policy
   for collecting real usage without telemetry or inflated metrics.
+- Publish the package on PyPI and the composite action on GitHub Marketplace, and
+  make the package-index install path the primary setup route.
 
 ## [0.2.1] - 2026-08-02
 
@@ -45,6 +49,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Run dependency, static-analysis, and tracked-file secret checks in CI and before
   release.
 
-[Unreleased]: https://github.com/satoissei/agents-doctor/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/satoissei/agents-doctor/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/satoissei/agents-doctor/releases/tag/v0.2.2
 [0.2.1]: https://github.com/satoissei/agents-doctor/releases/tag/v0.2.1
 [0.2.0]: https://github.com/satoissei/agents-doctor/releases/tag/v0.2.0

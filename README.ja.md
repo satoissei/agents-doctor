@@ -8,11 +8,10 @@
 
 ## インストール
 
-まだ PyPI には公開していません。GitHub のタグ付きリリース、またはチェックアウトから
-インストールしてください。
+PyPI の公開パッケージを、アプリケーションごとの独立環境へインストールします。
 
 ```console
-pipx install "git+https://github.com/satoissei/agents-doctor.git@v0.2.1"
+pipx install agents-doctor       # または: uv tool install agents-doctor
 
 # 開発用チェックアウト
 git clone https://github.com/satoissei/agents-doctor.git
@@ -22,10 +21,10 @@ pipx install .                  # または: uv tool install .
 
 ### インストールせずに試す
 
-確認したいリポジトリで、タグ付きリリースを pipx の一時環境から実行できます。
+確認したいリポジトリで、PyPI の最新リリースを pipx の一時環境から実行できます。
 
 ```console
-pipx run --spec "git+https://github.com/satoissei/agents-doctor.git@v0.2.1" agents-doctor check
+pipx run agents-doctor check
 ```
 
 ## 使い方

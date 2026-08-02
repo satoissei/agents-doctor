@@ -10,11 +10,12 @@ be verified from the public repository or a trustworthy public metric source.
 
 ## Current eligibility assessment
 
-As of release `v0.2.1`, the repository provides public source, an OSI-approved
+As of release `v0.2.2`, the repository provides public source, an OSI-approved
 license, installation and usage examples, contribution and security processes,
 issue and pull-request templates, a versioned changelog, tagged releases, automated
 tests across supported Python versions and operating systems, dependency and static
-security checks, and a maintainer release playbook.
+security checks, PyPI and GitHub Marketplace distribution, and a maintainer release
+playbook.
 
 The main unresolved selection risk is **meaningful usage, broad adoption, or clear
 ecosystem importance**. The repository does not currently claim external users,

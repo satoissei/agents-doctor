@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "agents-doctor"
-version = "0.2.1"
+version = "0.2.2"
 description = "Show what an AI coding agent actually loads from your AGENTS.md files - including the parts silently truncated away."
 readme = "README.md"
 requires-python = ">=3.9"

@@ -7,11 +7,11 @@ choose to share.
 
 ## Try it without installing
 
-From the repository you want to check, run the tagged release in a temporary pipx
-environment:
+From the repository you want to check, run the latest PyPI release in a temporary
+pipx environment:
 
 ```console
-pipx run --spec "git+https://github.com/satoissei/agents-doctor.git@v0.2.1" agents-doctor check
+pipx run agents-doctor check
 ```
 
 The command reads the checked-out repository locally. Review the privacy and symlink

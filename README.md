@@ -3,6 +3,7 @@
 **See what a coding agent actually loads from your `AGENTS.md` files — including the parts it silently throws away.**
 
 [![CI](https://github.com/satoissei/agents-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/satoissei/agents-doctor/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/agents-doctor)](https://pypi.org/project/agents-doctor/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9%20%E2%80%93%203.13-blue)](pyproject.toml)
 
@@ -34,11 +35,10 @@ repositories evolve.
 
 ## Install
 
-`agents-doctor` is not published on PyPI yet. Install the tagged release directly
-from GitHub, or install from a checkout while developing:
+Install the published package from PyPI with an isolated application environment:
 
 ```console
-pipx install "git+https://github.com/satoissei/agents-doctor.git@v0.2.1"
+pipx install agents-doctor       # or: uv tool install agents-doctor
 
 # Development checkout
 git clone https://github.com/satoissei/agents-doctor.git
@@ -48,11 +48,11 @@ pipx install .                  # or: uv tool install .
 
 ### Try without installing
 
-Run the tagged release in a temporary pipx environment from the repository you want
-to check:
+Run the latest PyPI release in a temporary pipx environment from the repository you
+want to check:
 
 ```console
-pipx run --spec "git+https://github.com/satoissei/agents-doctor.git@v0.2.1" agents-doctor check
+pipx run agents-doctor check
 ```
 
 ## Use
@@ -78,7 +78,7 @@ For a local checkout of this repository, use the composite action directly:
 Other repositories should use the published release tag rather than a development branch:
 
 ```yaml
-- uses: satoissei/agents-doctor@v0.2.1
+- uses: satoissei/agents-doctor@v0.2.2
 ```
 
 ### As a pre-commit hook
@@ -88,7 +88,7 @@ Use the published release tag as `rev`:
 ```yaml
 repos:
   - repo: https://github.com/satoissei/agents-doctor
-    rev: v0.2.1
+    rev: v0.2.2
     hooks:
       - id: agents-doctor
 ```
