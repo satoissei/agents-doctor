@@ -20,6 +20,14 @@ cd agents-doctor
 pipx install .                  # または: uv tool install .
 ```
 
+### インストールせずに試す
+
+確認したいリポジトリで、タグ付きリリースを pipx の一時環境から実行できます。
+
+```console
+pipx run --spec "git+https://github.com/satoissei/agents-doctor.git@v0.2.1" agents-doctor check
+```
+
 ## 使い方
 
 ```console
@@ -30,6 +38,12 @@ agents-doctor explain --format json  # 読み込み計画を JSON で出力
 agents-doctor --codex-config ~/.codex/config.toml explain  # Codex の設定を利用
 agents-doctor check --format sarif > agents-doctor.sarif  # GitHub Code Scanning 用
 ```
+
+実際のリポジトリで利用・評価した場合は、成功・不成功を問わず
+[公開利用レポート](https://github.com/satoissei/agents-doctor/issues/new?template=adoption_report.yml)
+を共有してください。このプロジェクトはテレメトリを収集せず、利用者が任意に公開した
+検証可能な情報だけを採用実績として扱います。詳細は
+[docs/adoption.md](docs/adoption.md)（英語）にあります。
 
 `.git` 以外のマーカーでプロジェクトルートを判定する場合は、
 `--root-marker NAME` を指定できます。複数指定にも対応しています。

@@ -46,6 +46,15 @@ cd agents-doctor
 pipx install .                  # or: uv tool install .
 ```
 
+### Try without installing
+
+Run the tagged release in a temporary pipx environment from the repository you want
+to check:
+
+```console
+pipx run --spec "git+https://github.com/satoissei/agents-doctor.git@v0.2.1" agents-doctor check
+```
+
 ## Use
 
 ```console
@@ -83,6 +92,12 @@ repos:
     hooks:
       - id: agents-doctor
 ```
+
+Using or evaluating the project in a real repository? Please submit a short
+[public adoption report](https://github.com/satoissei/agents-doctor/issues/new?template=adoption_report.yml),
+including failed or incomplete evaluations. The project collects no telemetry and
+counts only verifiable, voluntarily shared evidence; see
+[docs/adoption.md](docs/adoption.md).
 
 ## If you write instructions in Japanese, Chinese or Korean
 

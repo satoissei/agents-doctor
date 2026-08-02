@@ -24,6 +24,8 @@ prove ecosystem impact. Before applying, add only independently verifiable evide
 such as public downstream use, package downloads, substantive third-party issues or
 pull requests, or a documented dependency relationship. If none exists, submit the
 early-stage wording below and accept that the application may not be competitive yet.
+Maintainer verification downloads and maintainer-created examples are not external
+adoption; follow the public evidence policy in [adoption.md](adoption.md).
 
 ## Submission checklist
 

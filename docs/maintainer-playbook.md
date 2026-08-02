@@ -35,3 +35,8 @@ applicable, and publish only a sanitized explanation.
 Track reproducible mismatch reports, issue response time, release notes, CI health,
 and verified adoption evidence. Never inflate stars, downloads, user counts, or
 security claims in documentation or funding applications.
+
+Record adoption only under [adoption.md](adoption.md): keep the source and observation
+date, exclude identifiable maintainer verification traffic, and obtain explicit
+consent before naming an adopter. Failed evaluations are product feedback, not metrics
+to hide.

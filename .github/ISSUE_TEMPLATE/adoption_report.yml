@@ -1,0 +1,56 @@
+name: Public adoption report
+description: Tell us how agents-doctor is used in a public repository or workflow.
+title: "[adoption] "
+labels: ["adoption"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for trying agents-doctor. This form helps maintainers improve the
+        real installation and CI experience. Report only public, non-sensitive use;
+        this project does not need private source code or instruction contents.
+  - type: input
+    id: repository
+    attributes:
+      label: Public repository or workflow URL
+      description: Link to the public integration if one exists. Leave blank if it cannot be shared.
+      placeholder: "https://github.com/owner/repository"
+  - type: dropdown
+    id: surface
+    attributes:
+      label: How are you using agents-doctor?
+      options:
+        - GitHub Action
+        - CLI
+        - pre-commit hook
+        - Evaluation or trial
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or Git reference
+      placeholder: "v0.2.1"
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What happened?
+      description: Describe what was useful, confusing, missing, or incorrect without pasting private instructions.
+    validations:
+      required: true
+  - type: checkboxes
+    id: citation
+    attributes:
+      label: Public attribution
+      options:
+        - label: Maintainers may cite this public issue and linked public repository as adoption evidence.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I removed secrets, personal data, private repository paths, and private instruction contents.
+          required: true
