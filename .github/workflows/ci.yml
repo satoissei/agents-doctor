@@ -119,7 +119,7 @@ jobs:
           ).stdout.split("\0")
           paths = [path for path in tracked if path]
           scan = subprocess.run(
-              [sys.executable, "-m", "detect_secrets", "scan", "--no-verify", *paths],
+              [sys.executable, "-m", "detect_secrets", "scan", "--no-verify", "--", *paths],
               check=True,
               capture_output=True,
               text=True,

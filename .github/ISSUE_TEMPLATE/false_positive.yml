@@ -7,7 +7,10 @@ body:
     attributes:
       value: |
         False positives are treated as serious defects here: a noisy check teaches
-        people to ignore the tool.
+        people to ignore the tool. This issue is public. Use a synthetic
+        reproduction and remove secrets, personal data, private repository paths,
+        and private instruction contents. Report sensitive details privately under
+        SECURITY.md instead.
   - type: input
     id: rule
     attributes:
@@ -36,3 +39,10 @@ body:
       label: Why it is not a problem
     validations:
       required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I replaced private content with a minimal synthetic reproduction.
+          required: true

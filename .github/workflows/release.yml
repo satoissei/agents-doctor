@@ -34,7 +34,7 @@ jobs:
           ).stdout.split("\0")
           paths = [path for path in tracked if path]
           scan = subprocess.run(
-              [sys.executable, "-m", "detect_secrets", "scan", "--no-verify", *paths],
+              [sys.executable, "-m", "detect_secrets", "scan", "--no-verify", "--", *paths],
               check=True,
               capture_output=True,
               text=True,
@@ -47,6 +47,7 @@ jobs:
       - name: Verify that the tag matches the package version
         env:
           RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_REF_TYPE: ${{ github.ref_type }}
         run: |
           python - <<'PY'
           import os
@@ -55,6 +56,9 @@ jobs:
 
           version = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
           expected = f"v{version}"
+          ref_type = os.environ["RELEASE_REF_TYPE"]
+          if ref_type != "tag":
+              raise SystemExit(f"release must run from a tag, not {ref_type!r}")
           actual = os.environ["RELEASE_TAG"]
           if actual != expected:
               raise SystemExit(f"tag {actual!r} does not match project version {expected!r}")

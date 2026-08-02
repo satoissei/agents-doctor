@@ -18,6 +18,17 @@ _SEVERITY_LABEL = {
     Severity.INFO: "note",
 }
 
+_CONTROL_CHARACTERS = {
+    **{codepoint: f"\\x{codepoint:02x}" for codepoint in range(32)},
+    127: "\\x7f",
+}
+_CONTROL_CHARACTERS.update({9: "\\t", 10: "\\n", 13: "\\r", 27: "\\x1b"})
+
+
+def _visible_text(value: str) -> str:
+    """Render control characters visibly in human-readable terminal output."""
+    return value.translate(_CONTROL_CHARACTERS)
+
 
 def _human_bytes(value: int) -> str:
     if value < 1024:
@@ -33,9 +44,12 @@ def format_text(findings: Sequence[Finding], *, files_checked: int) -> str:
     lines: list[str] = []
     for finding in findings:
         label = _SEVERITY_LABEL[finding.severity]
-        lines.append(f"{finding.location}: {label} [{finding.rule}] {finding.message}")
+        lines.append(
+            f"{_visible_text(finding.location)}: {label} [{finding.rule}] "
+            f"{_visible_text(finding.message)}"
+        )
         if finding.hint:
-            lines.append(f"    {finding.hint}")
+            lines.append(f"    {_visible_text(finding.hint)}")
         lines.append("")
 
     counts = summarise(findings)
@@ -173,7 +187,7 @@ def summarise(findings: Iterable[Finding]) -> dict[Severity, int]:
 def format_plan(plan: LoadPlan) -> str:
     """Render one load plan: what the agent sees, in the order it sees it."""
     lines = [
-        f"Working directory: {plan.target}/",
+        f"Working directory: {_visible_text(plan.target)}/",
         f"Budget: {_human_bytes(plan.max_bytes)} ({plan.max_bytes:,} bytes)",
         "",
     ]
@@ -213,7 +227,7 @@ def format_plan(plan: LoadPlan) -> str:
             if not file.is_ascii:
                 detail += f" for {file.char_count:,} characters"
         remaining = max(0, remaining - chunk.included_bytes)
-        lines.append(f"  {index}. [{status}] {file.rel}")
+        lines.append(f"  {index}. [{status}] {_visible_text(file.rel)}")
         lines.append(f"     {detail}; {remaining:,} bytes of budget left")
 
     lines.append("")
@@ -304,6 +318,7 @@ def format_budget(plans: Sequence[LoadPlan]) -> str:
         else:
             status = "ok"
         target = plan.target if plan.target == "." else f"{plan.target}/"
+        target = _visible_text(target)
         if len(target) > 43:
             target = "..." + target[-40:]
         lines.append(

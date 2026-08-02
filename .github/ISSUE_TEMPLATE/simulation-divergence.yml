@@ -8,7 +8,10 @@ body:
       value: |
         This is the most valuable report this project can receive. The loader
         reproduction was written by reading agent source code, so any gap between
-        it and real behaviour is a genuine defect.
+        it and real behaviour is a genuine defect. This issue is public. Use
+        synthetic names and remove secrets, personal data, private repository
+        paths, and private instruction contents. Report sensitive details privately
+        under SECURITY.md instead.
   - type: textarea
     id: layout
     attributes:
@@ -50,3 +53,10 @@ body:
       label: Configured byte budget
       description: The value of project_doc_max_bytes, if you changed it.
       placeholder: "default"
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I replaced private content with a minimal synthetic reproduction.
+          required: true

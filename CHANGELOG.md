@@ -6,6 +6,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-08-03
+
+### Security
+
+- Prevent tracked filenames from being interpreted as `detect-secrets` options in
+  pull-request CI and release checks.
+- Render control characters visibly in human-readable reports so crafted POSIX
+  filenames cannot forge log lines or manipulate terminals.
+- Require privacy confirmation before users submit repository details through the
+  false-positive and loader-divergence issue forms.
+
+### Fixed
+
+- Reject manually dispatched releases unless the selected Git reference is a tag.
+
 ## [0.2.2] - 2026-08-03
 
 ### Added
@@ -49,7 +64,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Run dependency, static-analysis, and tracked-file secret checks in CI and before
   release.
 
-[Unreleased]: https://github.com/satoissei/agents-doctor/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/satoissei/agents-doctor/compare/v0.2.3...HEAD
+[0.2.3]: https://github.com/satoissei/agents-doctor/releases/tag/v0.2.3
 [0.2.2]: https://github.com/satoissei/agents-doctor/releases/tag/v0.2.2
 [0.2.1]: https://github.com/satoissei/agents-doctor/releases/tag/v0.2.1
 [0.2.0]: https://github.com/satoissei/agents-doctor/releases/tag/v0.2.0

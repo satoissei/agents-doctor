@@ -78,7 +78,7 @@ For a local checkout of this repository, use the composite action directly:
 Other repositories should use the published release tag rather than a development branch:
 
 ```yaml
-- uses: satoissei/agents-doctor@v0.2.2
+- uses: satoissei/agents-doctor@v0.2.3
 ```
 
 ### As a pre-commit hook
@@ -88,7 +88,7 @@ Use the published release tag as `rev`:
 ```yaml
 repos:
   - repo: https://github.com/satoissei/agents-doctor
-    rev: v0.2.2
+    rev: v0.2.3
     hooks:
       - id: agents-doctor
 ```
