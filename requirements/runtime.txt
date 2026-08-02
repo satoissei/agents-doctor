@@ -1,4 +1,4 @@
 # Keep this list identical to [project].dependencies in pyproject.toml.
 # CI audits this file separately so the audit tool's own dependencies do not mask
 # the security state of agents-doctor's runtime dependency set.
-tomli>=2.0; python_version < "3.11"
+tomli>=2.4.1; python_version < "3.11"
